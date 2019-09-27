@@ -1,3 +1,7 @@
+import * as THREE from 'three';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+
+
 /**
  * Constants used in this game.
  */
@@ -441,7 +445,7 @@ class Character
 	async init() {
 		// Load the character.
 		let promise = new Promise((resolve, reject) => {
-			var loader = new THREE.FBXLoader();
+			var loader = new FBXLoader();
 			loader.load(
 				"assets/Trump.fbx",
 				object => {
