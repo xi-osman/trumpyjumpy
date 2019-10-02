@@ -25,7 +25,7 @@ html, body {
     position:absolute;
     top:0;
     left:0;
-    padding: 2em 3em;
+    padding: 2em 1em;
     width: 40%;
     box-sizing: border-box;
     z-index: 100;
@@ -74,13 +74,13 @@ td {
 }
 
 td:first-child {
-    width: 40%;
+    width: 50%;
     text-align: right;
     padding-right: 0.5em;
 }
 
 td:nth-child(2) {
-    width: 60%;
+    width: 50%;
     text-align: left;
     padding-left: 0.5em;
 }

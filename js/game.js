@@ -40,7 +40,7 @@ function World() {
 	// Scoped variables in this world.
 	var element, scene, camera, character, renderer, light,
 		objects, paused, keysAllowed, score, difficulty,
-		treePresenceProb, maxTreeSize, fogDistance, gameOver;
+		treePresenceProb, maxTreeSize, fogDistance, gameOver, isMobile;
 
 	// Initialize the world.
 	init();
@@ -108,8 +108,17 @@ function World() {
 		var p = 80;
 
 		keysAllowed = {};
+		// Set isMobile
+		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+
+		// Set instructions
+		document.getElementById(
+			"variable-content").innerHTML =
+					isMobile ? "Double Tap to begin." : "Press any button to begin.";
+				
+
 		/// Support Touch 
-		var mc = new Hammer(element);
+		var mc = new Hammer(document.body);
 
 		//enable all directions
 		mc.get('swipe').set({
@@ -119,9 +128,10 @@ function World() {
 		});
 
 		// listen to events...
-		mc.on("swipeup swipedown swipeleft swiperight doubletap", function(ev) {
-		console.log(paused && !collisionsDetected() && swipe == 'doubletap')
+		mc.on("swipeup swipeleft swiperight doubletap", function(ev) {
 			var swipe = ev.type;
+			if(gameOver) 
+				document.location.reload(true);
 			if (paused && !collisionsDetected() && swipe == 'doubletap') {
 				paused = false;
 				character.onUnpause();
@@ -290,7 +300,7 @@ function World() {
 				var variableContent = document.getElementById("variable-content");
 				variableContent.style.visibility = "visible";
 				variableContent.innerHTML =
-					"Game over! Press the down arrow or double tap to try again.";
+					isMobile ? "Game over! Double Tap to try again." : "Game over! Press the down arrow to try again.";
 				var table = document.getElementById("ranks");
 				var rankNames = ["'Believe me I can do better'", "'Fake News'", "'Tim Apple'", "'Daily Runner'",
 					"'Local Prospect'", "'Regional Star'", "'National Champ'", "'Building the wall higher!'"];
