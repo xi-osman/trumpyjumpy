@@ -160,3 +160,33 @@ td:nth-child(2) {
         width: 100%;
     }
   }
+
+  #button {
+    font-size: calc(var(--font-size) - 1px);
+    line-height: calc(var(--line-height) - 1px);
+    --color-blue: #049EF4;
+    --font-size: 16px;
+    --line-height: 26px;
+    --panel-width: 300px;
+    --panel-padding: 16px;
+    --background-color: #222;
+    --text-color: #bbb;
+    --secondary-text-color: #666;
+    --border-style: 1px solid #444;
+    --header-height: 56px;
+    --icon-size: 24px;
+    font-family: 'Roboto Mono', monospace;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    text-decoration: none;
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    padding: 12px;
+    border-radius: 50%;
+    margin-bottom: 0px;
+    background-color: #FFF;
+    opacity: .9;
+    z-index: 999;
+    box-shadow: 0 0 4px rgba(0,0,0,.15);
+  }
