@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+// import { Easing, Tween, autoPlay } from 'es6-tween'
+const TWEEN = require('@tweenjs/tween.js').default;
 
 
 /**
@@ -26,7 +28,26 @@ var deg2Rad = Math.PI / 180;
 window.addEventListener('load', function () {
 	new World();
 });
-
+/// Move Cam
+async function setupTween(position, target, lookAt, duration)
+{
+	return new Promise(resolve => {
+		TWEEN.removeAll();
+		new TWEEN.Tween(position)
+			.to(target, duration)
+			.easing(TWEEN.Easing.Cubic.InOut)
+			.onUpdate (
+				function() {
+					// copy incoming position into camera position
+					window.camera.position.copy(position);
+					window.camera.lookAt(lookAt);
+				})
+			.onComplete(function() {
+					resolve()
+			})
+			.start();
+	  });
+}
 /** 
   * A class of which the world is an instance. Initializes the game
   * and contains the main game loop.
@@ -72,8 +93,8 @@ function World() {
 		// near plane, and far plane.
 		camera = new THREE.PerspectiveCamera(
 			68, element.clientWidth / element.clientHeight, 1, 120000);
-		camera.position.set(0, 1500, -2000);
-		camera.lookAt(new THREE.Vector3(0, 600, -5000));
+		camera.position.set(0, -200, -6200);
+		camera.lookAt(new THREE.Vector3(0, 600, -4000));
 		window.camera = camera;
 
 		// Set up resizing capabilities.
@@ -128,17 +149,16 @@ function World() {
 		});
 
 		// listen to events...
-		mc.on("swipeup swipeleft swiperight doubletap", function(ev) {
+		mc.on("swipeup swipeleft swiperight doubletap", async function(ev) {
 			var swipe = ev.type;
 			if(gameOver) 
 				document.location.reload(true);
 			if (paused && !collisionsDetected() && swipe == 'doubletap') {
+				document.getElementById("variable-content").style.visibility = "hidden";
+				document.getElementById("controls").style.display = "none";
+				await setupTween(camera.position.clone(), new THREE.Vector3(0, 1500, -2000), new THREE.Vector3(0, 600, -4000), 1500);
 				paused = false;
-				character.onUnpause();
-				document.getElementById(
-					"variable-content").style.visibility = "hidden";
-				document.getElementById(
-					"controls").style.display = "none";
+				character.onUnpause();				
 			} else {
 				if (swipe == 'doubletap') {
 					paused = true;
@@ -162,18 +182,17 @@ function World() {
 		});
 		document.addEventListener(
 			'keydown',
-			function (e) {
+			async function (e) {
 				if (!gameOver) {
 					var key = e.keyCode;
 					if (keysAllowed[key] === false) return;
 					keysAllowed[key] = false;
 					if (paused && !collisionsDetected() && key > 18) {
+						document.getElementById("variable-content").style.visibility = "hidden";
+						document.getElementById("controls").style.display = "none";
+						await setupTween(camera.position.clone(), new THREE.Vector3(0, 1500, -2000), new THREE.Vector3(0, 600, -4000), 1500);
 						paused = false;
 						character.onUnpause();
-						document.getElementById(
-							"variable-content").style.visibility = "hidden";
-						document.getElementById(
-							"controls").style.display = "none";
 					} else {
 						if (key == p) {
 							paused = true;
@@ -356,6 +375,7 @@ function World() {
 		// Render the page and repeat.
 		renderer.render(scene, camera);
 		requestAnimationFrame(loop);
+		TWEEN.update();
 	}
 
 	/**
@@ -383,7 +403,7 @@ function World() {
 			var randomNumber = Math.random();
 			if (randomNumber < probability) {
 				var scale = minScale + (maxScale - minScale) * Math.random();
-				var tree = new Tree(lane * 800, -400, position, scale);
+				var tree = new Wall(lane * 800, -400, position, scale);
 				objects.push(tree);
 				scene.add(tree.mesh);
 			}
@@ -597,21 +617,18 @@ class Character
   * A collidable tree in the game positioned at X, Y, Z in the scene and with
   * scale S.
   */
-function Tree(x, y, z, s) {
+let wallTexture = new THREE.TextureLoader().load( 'assets/brick.png' );
+function Wall(x, y, z, s) {
 
 	// Explicit binding.
 	var self = this;
 
-	// The object portrayed in the scene.
+	var geometry = new THREE.BoxGeometry( 900, 1200, 400 );
+	// immediately use the texture for material creation
+	var material = new THREE.MeshBasicMaterial( { map: wallTexture } );
+	var cube = new THREE.Mesh( geometry, material );
 	this.mesh = new THREE.Object3D();
-	var top = createCylinder(1, 300, 300, 4, Colors.green, 0, 1000, 0);
-	var mid = createCylinder(1, 400, 400, 4, Colors.green, 0, 800, 0);
-	var bottom = createCylinder(1, 500, 500, 4, Colors.green, 0, 500, 0);
-	var trunk = createCylinder(100, 100, 250, 32, Colors.brownDark, 0, 125, 0);
-	this.mesh.add(top);
-	this.mesh.add(mid);
-	this.mesh.add(bottom);
-	this.mesh.add(trunk);
+	this.mesh.add(cube);
 	this.mesh.position.set(x, y, z);
 	this.mesh.scale.set(s, s, s);
 	this.scale = s;
