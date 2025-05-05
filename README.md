@@ -1,7 +1,7 @@
 # Trumpy Jumpy
 [![Netlify Status](https://api.netlify.com/api/v1/badges/3add7b59-2594-4710-9732-74f975aaeceb/deploy-status)](https://app.netlify.com/sites/trumpyjumpy/deploys)
 
-👋🏼Hey! Welcome to this repository first I would like to mention that this repo was not created for politics purposes, it is just a combination of experiments and good resources I found on the web. That being said have fun with this! Also make sure you check out the game here. [Trumpy Jumpy](https://trumpyjumpy.netlify.com/)
+👋🏼Hey! Welcome to this repository first I would like to mention that this repo was not created for politics purposes, it is just a combination of experiments and good resources I found on the web. That being said have fun with this! Also make sure you check out the game here. [Trumpy Jumpy](https://trumpyjumpy.netlify.app/)
 
 ![](docs/imgs/demo.gif)
 
